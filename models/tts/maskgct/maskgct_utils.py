@@ -50,10 +50,11 @@ def build_s2a_model(cfg, device):
 
 
 def build_semantic_model(device):
-    semantic_model = Wav2Vec2BertModel.from_pretrained("facebook/w2v-bert-2.0")
+    # semantic_model = Wav2Vec2BertModel.from_pretrained("facebook/w2v-bert-2.0")
+    semantic_model = Wav2Vec2BertModel.from_pretrained("./ckpts/w2v-bert-2.0")
     semantic_model.eval()
     semantic_model.to(device)
-    stat_mean_var = torch.load("./models/tts/maskgct/ckpt/wav2vec2bert_stats.pt")
+    stat_mean_var = torch.load("./models/tts/maskgct/ckpt/wav2vec2bert_stats.pt", weights_only=True)
     semantic_mean = stat_mean_var["mean"]
     semantic_std = torch.sqrt(stat_mean_var["var"])
     semantic_mean = semantic_mean.to(device)
@@ -92,9 +93,8 @@ class MaskGCT_Inference_Pipeline:
         semantic_std,
         device,
     ):
-        self.processor = SeamlessM4TFeatureExtractor.from_pretrained(
-            "facebook/w2v-bert-2.0"
-        )
+        # self.processor = SeamlessM4TFeatureExtractor.from_pretrained("facebook/w2v-bert-2.0")
+        self.processor = SeamlessM4TFeatureExtractor.from_pretrained("./ckpts/w2v-bert-2.0")
         self.semantic_model = semantic_model
         self.semantic_codec = semantic_codec
         self.codec_encoder = codec_encoder
